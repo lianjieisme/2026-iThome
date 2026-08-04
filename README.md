@@ -28,6 +28,19 @@
 - **開新的一天**：複製 `day-01-hello-box/` 整夾 → 改名 → 清空內容重寫。它就是你的範本。
 - **樣式 / 框架**：預設原生 CSS + vanilla JS；版面複雜的天可用 Tailwind CDN，Day 18 用 Vue 示範動畫清理（理由見 [ADR 0001](./docs/adr/0001-per-day-standalone-html-cdn.md)）。
 
+## Commit 訊息慣例（Conventional Commits）
+
+格式：`prefix: 簡短描述（英文、祈使句）`。每天寫完通常一個 commit 就好。
+
+| Prefix      | 用在什麼                  | 例子                                           |
+| ----------- | ------------------------- | ---------------------------------------------- |
+| `feat:`     | 新增功能 / 新的一天 demo  | `feat: add Day 2 to/from/set demo`             |
+| `docs:`     | 只改文件 / 文章           | `docs: write Day 1 article`                    |
+| `chore:`    | 設定 / 雜項 / 建置        | `chore: initialize project`                    |
+| `fix:`      | 修 bug                    | `fix: correct ScrollTrigger refresh on Day 12` |
+| `refactor:` | 重構既有 code（功能不變） | `refactor: tidy Day 6 magnetic logic`          |
+| `style:`    | 只動排版 / 格式           | `style: format Day 3 css`                      |
+
 ## 怎麼跑 demo（本機）
 
 用 VS Code 的 **Live Server** 擴充套件，對著某天的 `index.html` 按右鍵 → Open with Live Server。
