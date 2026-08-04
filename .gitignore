@@ -1,0 +1,12 @@
+# macOS
+.DS_Store
+
+# 編輯器設定
+.vscode/
+.idea/
+
+# Claude Code 本地設定（不需進版控）
+.claude/
+
+# 記錄/暫存
+*.log

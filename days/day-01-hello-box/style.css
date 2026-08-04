@@ -1,0 +1,21 @@
+/* 簡單 reset（每天自足，直接複製這幾行就好） */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1a1a1a;
+}
+
+.box {
+  width: 100px;
+  height: 100px;
+  background: #4ade80;
+  border-radius: 8px;
+}
