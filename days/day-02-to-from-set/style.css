@@ -1,0 +1,72 @@
+/* 簡單 reset（每天自足，直接複製這幾行就好） */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  background: #1a1a1a;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Noto Sans TC",
+    sans-serif;
+}
+
+/* 四顆方塊並排的舞台 */
+.stage {
+  display: flex;
+  gap: 48px;
+}
+
+/* 每一欄：方塊 + 底下的方法標籤。
+   用固定高度 + 絕對定位，讓標籤固定在方塊移動範圍之外，不會被移下來的方塊蓋到。 */
+.col {
+  position: relative;
+  width: 100px;
+  height: 400px;
+}
+
+.box {
+  position: absolute;
+  top: 120px; /* 靜止中心 170：向上極值(-120)→top 0 不出界；向下極值(+120)→底邊 340 */
+  left: 0;
+  width: 100px;
+  height: 100px;
+  background: #4ade80;
+  border-radius: 8px;
+}
+
+.label {
+  position: absolute;
+  top: 360px; /* > 向下極值底邊 340，永遠留 20px 空隙，不被方塊蓋到 */
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: #e5e7eb;
+  font-size: 15px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+/* 重播按鈕 */
+.replay {
+  padding: 10px 24px;
+  font-size: 15px;
+  color: #1a1a1a;
+  background: #4ade80;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.replay:hover {
+  opacity: 0.85;
+}

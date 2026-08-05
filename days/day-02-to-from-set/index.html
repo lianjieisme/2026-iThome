@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Day 02 — .to / .from / .set / .fromTo</title>
+  <link rel="stylesheet" href="./style.css" />
+  <!-- GSAP 用 CDN 引入，不需要 build 工具 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+</head>
+<body>
+  <div class="stage">
+    <!-- 四顆方塊並排，各綁一個方法 -->
+    <div class="col">
+      <div class="box" id="box-set"></div>
+      <span class="label">.set()</span>
+    </div>
+    <div class="col">
+      <div class="box" id="box-to"></div>
+      <span class="label">.to()</span>
+    </div>
+    <div class="col">
+      <div class="box" id="box-from"></div>
+      <span class="label">.from()</span>
+    </div>
+    <div class="col">
+      <div class="box" id="box-fromto"></div>
+      <span class="label">.fromTo()</span>
+    </div>
+  </div>
+
+  <button id="replay" class="replay">↻ 重播</button>
+
+  <script src="./main.js"></script>
+</body>
+</html>
