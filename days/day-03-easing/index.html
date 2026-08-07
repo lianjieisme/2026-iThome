@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Day 03 — Easing 視覺化比較</title>
+  <link rel="stylesheet" href="./style.css" />
+  <!-- GSAP 用 CDN 引入，不需要 build 工具 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+</head>
+<body>
+  <!-- 第一類：數學型（純速度曲線，單調跑到終點、不會超出） -->
+  <h2 class="group-title">數學型（速度曲線）</h2>
+  <div class="stage">
+    <div class="row">
+      <span class="label">none（linear）</span>
+      <div class="track"><div class="box" id="box-none"></div></div>
+    </div>
+    <div class="row">
+      <span class="label">power2.out</span>
+      <div class="track"><div class="box" id="box-power2"></div></div>
+    </div>
+    <div class="row">
+      <span class="label">sine.out</span>
+      <div class="track"><div class="box" id="box-sine"></div></div>
+    </div>
+    <div class="row">
+      <span class="label">expo.out</span>
+      <div class="track"><div class="box" id="box-expo"></div></div>
+    </div>
+  </div>
+
+  <!-- 第二類：效果型（模擬物理，會衝過頭 / 彈跳） -->
+  <h2 class="group-title">效果型（模擬物理）</h2>
+  <div class="stage">
+    <div class="row">
+      <span class="label">back.out</span>
+      <div class="track"><div class="box" id="box-back"></div></div>
+    </div>
+    <div class="row">
+      <span class="label">elastic.out</span>
+      <div class="track"><div class="box" id="box-elastic"></div></div>
+    </div>
+    <div class="row">
+      <span class="label">bounce.out</span>
+      <div class="track"><div class="box" id="box-bounce"></div></div>
+    </div>
+  </div>
+
+  <button id="replay" class="replay">↻ 重播</button>
+
+  <script src="./main.js"></script>
+</body>
+</html>

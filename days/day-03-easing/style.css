@@ -1,0 +1,92 @@
+/* 簡單 reset（每天自足，直接複製這幾行就好） */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 40px 0;
+  background: #1a1a1a;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Noto Sans TC",
+    sans-serif;
+}
+
+/* 每一類的小標題 */
+.group-title {
+  margin-top: 20px;
+  color: #9ca3af;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+.group-title:first-child {
+  margin-top: 0;
+}
+
+/* 一類裡的幾列賽道疊在一起 */
+.stage {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 每一列：左邊 ease 名稱標籤 + 右邊賽道 */
+.row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.label {
+  width: 140px;
+  text-align: right;
+  color: #e5e7eb;
+  font-size: 14px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+/* 賽道：方塊在裡面從左移到右。
+   終點線用右側虛線標出，才看得出 back / elastic 有沒有「衝過頭」。 */
+.track {
+  position: relative;
+  width: 368px; /* = 方塊跑的距離 320 + 方塊寬 48，讓右緣終點線剛好對齊靜止位置 */
+  height: 48px;
+  border-right: 2px dashed #4b5563; /* 終點參考線：看 back / elastic 有沒有衝過頭 */
+}
+
+.box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 48px;
+  height: 48px;
+  background: #4ade80;
+  border-radius: 8px;
+}
+
+/* 重播按鈕 */
+.replay {
+  margin-top: 24px;
+  padding: 10px 24px;
+  font-size: 15px;
+  color: #1a1a1a;
+  background: #4ade80;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.replay:hover {
+  opacity: 0.85;
+}
