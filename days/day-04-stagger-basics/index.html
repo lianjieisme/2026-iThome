@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Day 04 — Stagger 一維群組動畫</title>
+  <link rel="stylesheet" href="./style.css" />
+  <!-- GSAP + Vue 3 都用 CDN，不需要 build 工具 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+</head>
+<body>
+  <div id="app" v-cloak>
+    <!-- 一排方塊，會依序進場。順序與間隔由下面的控制鈕決定。 -->
+    <div class="stage">
+      <div class="box" v-for="n in 9" :key="n"></div>
+    </div>
+
+    <!-- 目前套用的 stagger 設定，會即時更新 -->
+    <p class="config">{{ config }}</p>
+
+    <!-- 控制群組 1：from（從哪個方向開始跑） -->
+    <div class="controls">
+      <span class="controls-title">from（起跑方向）</span>
+      <div class="btn-group">
+        <button
+          v-for="f in froms"
+          :key="f"
+          class="btn"
+          :class="{ 'is-active': from === f }"
+          @click="pickFrom(f)"
+        >{{ f }}</button>
+      </div>
+    </div>
+
+    <!-- 控制群組 2：each vs amount（間隔怎麼算） -->
+    <div class="controls">
+      <span class="controls-title">間隔模式</span>
+      <div class="btn-group">
+        <button
+          v-for="m in modes"
+          :key="m.value"
+          class="btn"
+          :class="{ 'is-active': mode === m.value }"
+          @click="pickMode(m.value)"
+        >{{ m.label }}</button>
+      </div>
+    </div>
+
+    <button class="replay" @click="play">↻ 重播</button>
+  </div>
+
+  <script src="./main.js"></script>
+</body>
+</html>
