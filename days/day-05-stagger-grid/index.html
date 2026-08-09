@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Day 05 — Stagger grid 網格波浪</title>
+  <link rel="stylesheet" href="./style.css" />
+  <!-- GSAP + Vue 3 都用 CDN，不需要 build 工具 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+</head>
+<body>
+  <div id="app" v-cloak>
+    <!-- 8×8 網格，會依 from 的起點像水波一樣擴散進場 -->
+    <div class="grid">
+      <div class="cell" v-for="n in 64" :key="n"></div>
+    </div>
+
+    <!-- 目前套用的 stagger 設定，會即時更新 -->
+    <p class="config">{{ config }}</p>
+
+    <!-- 控制群組 1：from（水波從哪裡開始擴散） -->
+    <div class="controls">
+      <span class="controls-title">from（擴散起點）</span>
+      <div class="btn-group">
+        <button
+          v-for="f in froms"
+          :key="f"
+          class="btn"
+          :class="{ 'is-active': from === f }"
+          @click="pickFrom(f)"
+        >{{ f }}</button>
+      </div>
+    </div>
+
+    <!-- 控制群組 2：axis（只沿單一軸掃，配角） -->
+    <div class="controls">
+      <span class="controls-title">axis（掃描軸）</span>
+      <div class="btn-group">
+        <button
+          v-for="a in axes"
+          :key="a.value"
+          class="btn"
+          :class="{ 'is-active': axis === a.value }"
+          @click="pickAxis(a.value)"
+        >{{ a.label }}</button>
+      </div>
+    </div>
+
+    <button class="replay" @click="play">↻ 重播</button>
+  </div>
+
+  <script src="./main.js"></script>
+</body>
+</html>
