@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Day 08 — Magnetic 滑鼠跟隨</title>
+    <link rel="stylesheet" href="./style.css" />
+    <!-- GSAP + Vue 3 都用 CDN，不需要 build 工具 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  </head>
+  <body>
+    <div id="app" v-cloak>
+      <!-- 舞台：左「跟屁蟲」(絕對位置) vs 右「磁吸」(相對位移) -->
+      <div class="stage">
+        <!-- 左：跟屁蟲。滑鼠在這區裡移動，方塊直接飛到滑鼠所在 -->
+        <div class="pane">
+          <span class="pane-title">跟屁蟲：黏著滑鼠絕對位置</span>
+          <div class="follow-area" ref="followArea" @mousemove="onFollowMove">
+            <div class="follower" ref="follower"></div>
+            <span class="hint">滑鼠移進來看看</span>
+          </div>
+        </div>
+
+        <!-- 右：磁吸。滑鼠靠近才朝按鈕偏一點，離開彈回 -->
+        <div class="pane">
+          <span class="pane-title">磁吸：朝滑鼠方向偏移一點</span>
+          <div
+            class="magnetic-area"
+            ref="magneticArea"
+            @mousemove="onMagneticMove"
+            @mouseleave="onMagneticLeave"
+          >
+            <button class="magnetic-btn" ref="magneticBtn">Hover 我</button>
+            <span class="hint">靠近就會被吸過去</span>
+          </div>
+          <!-- 磁吸當前偏移量，幫你「看見」相對位移 -->
+          <span class="readout">x {{ offset.x }}　y {{ offset.y }}</span>
+        </div>
+      </div>
+
+      <!-- 目前磁吸參數對應的 quickTo 程式碼，會隨下面的旋鈕即時更新 -->
+      <pre class="config">{{ config }}</pre>
+
+      <!-- 控制群組：磁吸的三顆手感旋鈕 -->
+      <div class="controls">
+        <!-- strength：即時乘數，不用重建 quickTo，所以用 input -->
+        <label class="ctrl">
+          <span class="ctrl-label">磁力 strength：{{ strength }}</span>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.05"
+            :value="strength"
+            @input="strength = Number($event.target.value)"
+          />
+        </label>
+
+        <!-- duration：改了要重建 quickTo，用 change(放開才觸發)，避免拖曳中狂重建 -->
+        <label class="ctrl">
+          <span class="ctrl-label">duration：{{ duration }}s（放開才套用）</span>
+          <input
+            type="range"
+            min="0.1"
+            max="1.2"
+            step="0.05"
+            :value="duration"
+            @change="duration = Number($event.target.value)"
+          />
+        </label>
+
+        <!-- ease：改了要重建 quickTo，但按鈕點擊本來就不連續 -->
+        <div class="ctrl">
+          <span class="ctrl-label">ease</span>
+          <div class="btn-group">
+            <button
+              v-for="e in eases"
+              :key="e"
+              class="btn"
+              :class="{ 'is-active': ease === e }"
+              @click="ease = e"
+            >
+              {{ e }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="./main.js"></script>
+  </body>
+</html>

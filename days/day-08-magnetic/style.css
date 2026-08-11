@@ -1,0 +1,192 @@
+/* 簡單 reset（每天自足，直接複製這幾行就好） */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Vue 掛載前先把 #app 藏起來，避免 {{ }} 原始標記閃一下 */
+[v-cloak] {
+  display: none;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  padding: 40px 16px;
+  background: #1a1a1a;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Noto Sans TC",
+    sans-serif;
+}
+
+/* 舞台：左跟屁蟲 vs 右磁吸，左右並排 */
+.stage {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 28px;
+}
+
+.pane {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.pane-title {
+  color: #9ca3af;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+}
+
+/* 共用的方形舞台區塊 */
+.follow-area,
+.magnetic-area {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  cursor: crosshair;
+}
+
+/* 跟屁蟲的舞台：實線框 */
+.follow-area {
+  border: 1px solid #3f3f46;
+  background: #202024;
+}
+
+/* 磁吸的舞台：虛線框，標示「這是比按鈕大的感應區」 */
+.magnetic-area {
+  border: 1px dashed #3f3f46;
+  background: #202024;
+}
+
+/* 跟屁蟲小方塊：絕對定位，用 transform(x/y) 飛到滑鼠所在 */
+.follower {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 24px;
+  height: 24px;
+  background: #4ade80;
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+/* 磁吸按鈕 */
+.magnetic-btn {
+  padding: 14px 26px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #0f172a;
+  background: #38bdf8;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+/* 舞台裡的淡提示字，放中間當背景 */
+.hint {
+  position: absolute;
+  bottom: 12px;
+  color: #52525b;
+  font-size: 12px;
+  pointer-events: none;
+}
+
+/* 磁吸當前偏移量的即時讀數 */
+.readout {
+  color: #9ca3af;
+  font-size: 13px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+/* 即時程式碼區 */
+.config {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 14px 16px;
+  color: #e5e7eb;
+  font-size: 13px;
+  line-height: 1.6;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  background: #111;
+  border: 1px solid #3f3f46;
+  border-radius: 8px;
+  white-space: pre;
+}
+
+/* 控制群組 */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.ctrl {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.ctrl-label {
+  color: #9ca3af;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+}
+
+.ctrl input[type="range"] {
+  width: 180px;
+  accent-color: #4ade80;
+  cursor: pointer;
+}
+
+.btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn {
+  padding: 7px 14px;
+  font-size: 14px;
+  color: #e5e7eb;
+  background: #2a2a2a;
+  border: 1px solid #3f3f46;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn:hover {
+  border-color: #4ade80;
+}
+
+.btn.is-active {
+  color: #1a1a1a;
+  background: #4ade80;
+  border-color: #4ade80;
+  font-weight: 600;
+}
