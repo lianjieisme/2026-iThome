@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Day 07 — Hover 互動基礎</title>
+    <link rel="stylesheet" href="./style.css" />
+    <!-- GSAP + Vue 3 都用 CDN，不需要 build 工具 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  </head>
+  <body>
+    <div id="app" v-cloak>
+      <!-- 一排卡片：3 張 GSAP 卡（滑鼠觸發）+ 1 張 CSS 對照卡 -->
+      <div class="stage">
+        <!-- GSAP 卡：滑鼠進出交給 @mouseenter / @mouseleave，動畫本體由 GSAP 跑 -->
+        <div
+          class="card"
+          v-for="n in 3"
+          :key="n"
+          @mouseenter="onEnter(n - 1)"
+          @mouseleave="onLeave(n - 1)"
+        >
+          <span class="card-tag">GSAP</span>
+        </div>
+
+        <!-- CSS 對照卡：不綁任何 JS，純靠 CSS :hover -->
+        <div class="card card--css">
+          <span class="card-tag">CSS :hover</span>
+        </div>
+      </div>
+
+      <!-- 目前 GSAP 模式對應的處理程式碼，會即時更新 -->
+      <pre class="config">{{ config }}</pre>
+
+      <!-- 控制群組：切換 GSAP 三種寫法 -->
+      <div class="controls">
+        <span class="controls-title">GSAP hover 寫法</span>
+        <div class="btn-group">
+          <button
+            v-for="m in modes"
+            :key="m.value"
+            class="btn"
+            :class="{ 'is-active': mode === m.value }"
+            @click="pickMode(m.value)"
+          >
+            {{ m.label }}
+          </button>
+        </div>
+      </div>
+
+      <!-- CSS 卡的寫法（固定不隨按鈕變），放在最下面當對照 -->
+      <div class="css-note">
+        <span class="css-note-title">CSS 卡固定用這段（不用寫 JS）</span>
+        <pre class="css-snippet">
+.card {              /* 離場快 */
+  transition: transform 0.35s;
+}
+.card:hover {        /* 進場慢 */
+  transform: scale(1.4);
+  transition: transform 1.6s;
+}</pre
+        >
+      </div>
+    </div>
+
+    <script src="./main.js"></script>
+  </body>
+</html>
