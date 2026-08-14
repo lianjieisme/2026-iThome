@@ -1,0 +1,214 @@
+/* 簡單 reset（每天自足，直接複製這幾行就好） */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Vue 掛載前先把 #app 藏起來，避免 {{ }} 原始標記閃一下 */
+[v-cloak] {
+  display: none;
+}
+
+/* 要給寬度上限，否則底下 .config 的 max-width: 100% 沒有參照對象，
+   一行長程式碼就會把整頁往外撐出橫向捲軸 */
+#app {
+  width: 100%;
+  max-width: 1120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 26px;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  padding: 40px 16px;
+  background: #1a1a1a;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Noto Sans TC",
+    sans-serif;
+}
+
+/* 舞台在左、控制項在右。窄畫面時 flex-wrap 會讓控制項自己掉到下面 */
+.demo-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+/* 舞台：上下兩個 group 疊著 */
+.stage {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* 上排（自己拆）／下排（交給外掛）各一個 group */
+.group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 24px;
+  border: 1px solid #3f3f46;
+  border-radius: 14px;
+  background: #202024;
+}
+
+.group-title {
+  color: #e5e7eb;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.group-title code,
+.ctrl-label code,
+.note code {
+  padding: 2px 6px;
+  color: #4ade80;
+  font-size: 0.9em;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  background: #111;
+  border-radius: 5px;
+}
+
+/* 中英兩組並排 */
+.panes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 28px;
+}
+
+.pane {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.pane-title {
+  color: #9ca3af;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+}
+
+/* 要拆的文字本體。
+   先藏起來，等 JS 拆完再由 GSAP 打開，避免原始文字閃一下（FOUC）。 */
+.text {
+  visibility: hidden;
+  min-width: 260px;
+  padding: 16px 18px;
+  color: #e5e7eb;
+  font-size: 22px;
+  line-height: 1.7;
+  text-align: center;
+  border: 1px dashed #3f3f46;
+  border-radius: 10px;
+}
+
+/* 英文那組刻意設窄：文字被逼折行，才看得到單字從中間斷開。
+   140px 是實測挑的：上下兩排都剛好四行，差異純粹落在斷點位置。
+   （試過 190px，那個寬度剛好兩排結果一樣，什麼都看不出來。） */
+.text.is-narrow {
+  min-width: 0;
+  width: 140px;
+}
+
+/* 手動拆出來的每一個字。
+   span 預設是 inline，而 inline 元素吃不到 transform，
+   所以這一行才是今天最容易卡關的地方。 */
+.char {
+  display: inline-block;
+}
+
+/* 開關關掉時退回預設值，位移就會整組失效。
+   下排不受影響，因為 SplitText 自己就在每個字上寫了 display: inline-block。 */
+.chars-are-inline .char {
+  display: inline;
+}
+
+/* 即時程式碼區 */
+.config {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 14px 16px;
+  color: #e5e7eb;
+  font-size: 13px;
+  line-height: 1.6;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  background: #111;
+  border: 1px solid #3f3f46;
+  border-radius: 8px;
+  white-space: pre;
+}
+
+/* 控制群組：直向排在舞台右邊 */
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  width: 230px;
+  padding: 20px;
+  border: 1px solid #3f3f46;
+  border-radius: 14px;
+  background: #202024;
+}
+
+.ctrl {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.ctrl-label {
+  color: #9ca3af;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+}
+
+.btn {
+  padding: 7px 16px;
+  font-size: 14px;
+  color: #e5e7eb;
+  background: #2a2a2a;
+  border: 1px solid #3f3f46;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn:hover {
+  border-color: #4ade80;
+}
+
+.btn.is-active {
+  color: #1a1a1a;
+  background: #4ade80;
+  border-color: #4ade80;
+  font-weight: 600;
+}
+
+/* 控制項底下那句說明 */
+.note {
+  margin-top: 4px;
+  padding-top: 16px;
+  color: #9ca3af;
+  font-size: 12px;
+  line-height: 1.9;
+  border-top: 1px solid #3f3f46;
+}

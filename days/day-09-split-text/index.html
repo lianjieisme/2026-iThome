@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Day 09 — 文字逐字進場</title>
+    <link rel="stylesheet" href="./style.css" />
+    <!-- GSAP + Vue 3 都用 CDN，不需要 build 工具。
+         注意版本跳到 3.15.0：SplitText 從 3.13 起才免費開放，3.12.5 載不到。 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/SplitText.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  </head>
+  <body>
+    <div id="app" v-cloak>
+      <!-- 舞台在左、控制項在右 -->
+      <div class="demo-row">
+        <div class="stage">
+          <!-- 上排：自己動手拆。開關會作用在這一排的中英兩組。
+           注意 class 綁在這裡而不是 #app：#app 是 Vue 的掛載容器，
+           容器本身的屬性不會被當成 template 編譯，綁在上面沒有作用。 -->
+          <section class="group" :class="{ 'chars-are-inline': !inlineBlock }">
+        <h2 class="group-title">自己動手拆 <code>text.split('')</code></h2>
+        <div class="panes">
+          <div class="pane">
+            <span class="pane-title">中文（句尾有一個 emoji）</span>
+            <!-- 這塊文字交給 GSAP 改寫，Vue 不要碰它，所以用 ref 拿、不用 {{ }} -->
+            <p class="text" ref="manualZh">文字也能一個一個進場 🎬</p>
+          </div>
+          <div class="pane">
+            <span class="pane-title">英文（容器刻意設窄）</span>
+            <p class="text is-narrow" ref="manualEn">
+              Animate every single character
+            </p>
+          </div>
+        </div>
+      </section>
+
+          <!-- 下排：交給官方外掛。同樣的兩句話，同樣的動畫參數 -->
+          <section class="group">
+        <h2 class="group-title">交給外掛 <code>SplitText.create()</code></h2>
+        <div class="panes">
+          <div class="pane">
+            <span class="pane-title">中文（句尾有一個 emoji）</span>
+            <p class="text" ref="splitZh">文字也能一個一個進場 🎬</p>
+          </div>
+          <div class="pane">
+            <span class="pane-title">英文（容器刻意設窄）</span>
+            <p class="text is-narrow" ref="splitEn">
+              Animate every single character
+            </p>
+          </div>
+        </div>
+          </section>
+        </div>
+
+        <!-- 控制項：跟舞台並排在右邊，不用捲到最下面才按得到 -->
+        <aside class="controls">
+          <!-- 今天唯一的觀念開關：手動拆出來的字要不要 display: inline-block -->
+          <label class="ctrl">
+            <span class="ctrl-label">
+              手動拆字加上 <code>display: inline-block</code>
+            </span>
+            <button
+              class="btn toggle"
+              :class="{ 'is-active': inlineBlock }"
+              @click="inlineBlock = !inlineBlock"
+            >
+              {{ inlineBlock ? '已加上' : '沒加' }}
+            </button>
+          </label>
+
+          <div class="ctrl">
+            <span class="ctrl-label">看不夠？再放一次</span>
+            <button class="btn" @click="playAll">重播</button>
+          </div>
+
+          <p class="note">
+            沒加 <code>inline-block</code> 時，上排的位移完全失效，只剩下淡入。
+            下排不受影響，因為 SplitText 自己就把這件事處理掉了。
+          </p>
+        </aside>
+      </div>
+
+      <!-- 目前的動畫寫法，會跟著開關變 -->
+      <pre class="config">{{ config }}</pre>
+    </div>
+
+    <script src="./main.js"></script>
+  </body>
+</html>

@@ -39,9 +39,9 @@
 | 15  | ScrollTrigger 實戰：捲動敘事區塊    | 做一段完整的 scroll-driven 敘事（pin + scrub + 段落接力），可直接搬進 portfolio |
 | 16  | SVG 畫線動畫（搭 GSAP）             | `stroke-dasharray` + `stroke-dashoffset`，捲動時線條逐漸畫出——GSAP/ScrollTrigger 的好夥伴 |
 | 17  | GSAP 外掛速覽：Draggable + Flip + MotionPath | 三個亮點外掛淺講：拖曳慣性（Draggable）、版面切換（Flip）、沿 SVG 路徑移動（MotionPath） |
-| 18  | `gsap.context()` + `matchMedia`     | Vue 專案中動畫的正確清理與 RWD 響應式寫法                       |
+| 18  | `gsap.context()` + `matchMedia`     | Vue 專案中動畫的正確清理、RWD 響應式寫法，以及 `prefers-reduced-motion`（同一顆 matchMedia，只差條件物件多一行） |
 | 19  | GSAP vs Anime.js 選型比較           | 同效果雙套件實作，語法/檔案大小/使用情境對照                    |
-| 20  | 效能與無障礙                        | `will-change`、transform/opacity only、`prefers-reduced-motion` |
+| 20  | 動畫效能                            | `will-change`、transform/opacity only，為什麼 GSAP 一直要你用 `x` 而不是 `left` |
 
 ## Phase 3｜Three.js 深度線（Day 21-26）
 
@@ -79,6 +79,7 @@
 - **被砍掉的部分**：Matter.js 物理引擎；GLSL Shader（難度陡）；Canvas 2D、粒子系統、Pixi.js（對「只攻 Three.js」的小白是岔路）；SVG filter（偏進階，CP 值低）。
 - **兩個彈性日（Day 27-28）**：完全新手每篇都會超時、也更容易卡坑，需要比老手更多緩衝。定位是斷賽保險，但各預排一個「單篇、可獨立、agency 常用」的技術備用主題（平滑捲動 / 跑馬燈），進度正常時就寫，用不到就拿去補進度或多打磨作品。
 - **Vue 專屬亮點**：Day 18（`gsap.context()` + `matchMedia`）是履歷差異化重點——多數人會用 GSAP，但不一定懂得在框架元件生命週期中正確清理動畫。
+- **reduced-motion 併進 Day 18（2026-08-12 決定）**：`prefers-reduced-motion` 和 RWD 斷點本來就是同一顆 `gsap.matchMedia()`，官方文件同一段講完，寫法只差 `mm.add()` 的條件物件多一行。原本 Day 18 講 matchMedia、Day 20 再講 reduced-motion，等於同一個 API 拆兩天講。合併後 Day 18 更完整，Day 20 收斂成純效能日。**不要把 Day 20 整天砍掉**：transform/opacity only 是動畫效能的根本原理（也是 agency 面試會問的），撐得起一天，塞進 Day 29 條列會浪費。
 
 ## 賽外配套（不佔 30 天，但決定成敗）
 
