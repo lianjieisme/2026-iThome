@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Day 10 — 自訂 easing（CustomEase）</title>
+    <link rel="stylesheet" href="./style.css" />
+    <!-- GSAP + Vue 3 都用 CDN，不需要 build 工具。
+         CustomEase 不在 gsap core 裡，要另外載一支，而且要放在 gsap 之後。 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/CustomEase.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  </head>
+  <body>
+    <div id="app" v-cloak>
+      <div class="demo-row">
+        <div class="stage">
+          <!-- 左邊：曲線圖。兩條線疊在同一張圖上，灰色是對照組、綠色是自訂 -->
+          <section class="group">
+            <h2 class="group-title">曲線長什麼樣</h2>
+
+            <div class="chart-wrap">
+              <!-- viewBox 上下多留一截，overshoot 超出 0-1 的部分才不會被裁掉 -->
+              <svg class="chart" viewBox="0 0 320 260">
+                <!-- 兩條基準線：下面那條是 0（還沒動），上面那條是 1（跑到終點） -->
+                <line class="grid" x1="0" :y1="yOf(0)" x2="320" :y2="yOf(0)" />
+                <line class="grid" x1="0" :y1="yOf(1)" x2="320" :y2="yOf(1)" />
+
+                <polyline class="curve is-ref" :points="refPoints" />
+                <polyline class="curve is-custom" :points="customPoints" />
+              </svg>
+
+              <span class="axis-label is-top">1（終點）</span>
+              <span class="axis-label is-bottom">0（起點）</span>
+            </div>
+
+            <p class="chart-hint">
+              橫軸是時間 0 → 1，縱軸是動畫完成度 0 → 1。
+              線往上衝得越陡代表那一刻跑得越快，爬出上面那條基準線就是衝過頭了。
+            </p>
+          </section>
+
+          <!-- 右邊：兩顆方塊同時起跑，跑一樣的距離、一樣的時間 -->
+          <section class="group">
+            <h2 class="group-title">套上去實際跑一次</h2>
+
+            <div class="track">
+              <span class="track-label">內建 <code>power2.out</code></span>
+              <div class="rail"><div class="box is-ref" ref="refBox"></div></div>
+            </div>
+
+            <div class="track">
+              <span class="track-label">自訂 <code>{{ current.label }}</code></span>
+              <div class="rail"><div class="box is-custom" ref="customBox"></div></div>
+            </div>
+          </section>
+        </div>
+
+        <!-- 控制項：四條現成曲線 + 重播 -->
+        <aside class="controls">
+          <div class="ctrl">
+            <span class="ctrl-label">換一條曲線試試</span>
+            <div class="preset-list">
+              <button
+                v-for="(p, i) in presets"
+                :key="p.name"
+                class="btn preset"
+                :class="{ 'is-active': i === index }"
+                @click="select(i)"
+              >
+                {{ p.label }}
+              </button>
+            </div>
+          </div>
+
+          <div class="ctrl">
+            <span class="ctrl-label">看不夠？再放一次</span>
+            <button class="btn" @click="play">重播</button>
+          </div>
+
+          <p class="note">{{ current.note }}</p>
+        </aside>
+      </div>
+
+      <!-- 目前這條曲線的完整寫法 -->
+      <pre class="config">{{ config }}</pre>
+    </div>
+
+    <script src="./main.js"></script>
+  </body>
+</html>
