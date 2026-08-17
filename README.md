@@ -31,7 +31,7 @@
 - **命名**：`day-XX-主題slug`，天數補零（`01` 不是 `1`），排序才不會亂。
 - **每天完全自足**：每個 day 夾自己一份 `style.css`，不共用 `/assets`。任何一天單獨搬走 / 丟 CodePen 都能直接跑。
 - **開新的一天**：複製 `days/_template/` 整夾 → 改名成 `day-XX-主題slug` → 從骨架開始填。
-- **樣式 / 框架**：預設原生 CSS + vanilla JS；版面複雜的天可用 Tailwind CDN，Day 20 用 Vue 示範動畫清理（理由見 [ADR 0001](./docs/adr/0001-per-day-standalone-html-cdn.md)）。
+- **樣式 / 框架**：預設原生 CSS + vanilla JS；版面複雜的天可用 Tailwind CDN，Day 21 用 Vue 示範動畫清理（理由見 [ADR 0001](./docs/adr/0001-per-day-standalone-html-cdn.md)）。
 
 ## Commit 訊息慣例（Conventional Commits）
 
@@ -56,4 +56,4 @@
 `https://你的帳號.github.io/repo名/days/day-01-hello-box/`
 文章裡貼這個連結，讀者點開就看到活的 demo。
 
-> Three.js 那幾天（Day 22-26）用 CDN + `<script type="importmap">` 引入，一樣不需要 build 工具。
+> Three.js 那幾天（Day 23-27）用 CDN + `<script type="importmap">` 引入，一樣不需要 build 工具。
