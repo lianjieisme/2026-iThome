@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Day 11 — 動畫控制（progress / timeScale / seek）</title>
+    <link rel="stylesheet" href="./style.css" />
+    <!-- GSAP + Vue 3 都用 CDN，不需要 build 工具。
+         今天全部用 gsap core，沒有外掛要載。 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/gsap.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  </head>
+  <body>
+    <div id="app" v-cloak>
+      <div class="demo-row">
+        <div class="stage">
+          <!-- 上面：一條三段的 timeline，方塊先移動、再旋轉、最後放大變色 -->
+          <section class="group">
+            <h2 class="group-title">一條 3 秒的 timeline，分成三段</h2>
+
+            <div class="rail">
+              <div class="box" ref="box"></div>
+            </div>
+
+            <!-- 進度條：既是顯示器也是控制器，拖它就能把播放頭搬到任何位置 -->
+            <div class="bar-wrap">
+              <div class="bar-track">
+                <div class="bar-fill" :style="{ width: progress * 100 + '%' }"></div>
+                <!-- 三個 label 在時間軸上的位置，跟下面的跳位鈕對得起來 -->
+                <span
+                  v-for="mark in labels"
+                  :key="mark.name"
+                  class="bar-mark"
+                  :style="{ left: (mark.time / TOTAL) * 100 + '%' }"
+                ></span>
+              </div>
+              <input
+                class="bar-input"
+                type="range"
+                min="0"
+                max="1"
+                step="0.001"
+                :value="progress"
+                @input="scrub"
+              />
+            </div>
+
+            <p class="hint">
+              直接拖上面那條進度條，方塊會跟著跳到那個時間點的樣子。
+            </p>
+          </section>
+
+          <!-- 下面：即時面板，把 timeline 的內部狀態攤開來看 -->
+          <section class="group">
+            <h2 class="group-title">它現在在想什麼</h2>
+
+            <div class="readout">
+              <div class="stat">
+                <span class="stat-label">progress()</span>
+                <span class="stat-value">{{ progress.toFixed(3) }}</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">目前秒數</span>
+                <span class="stat-value">{{ (progress * TOTAL).toFixed(2) }}s</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">timeScale()</span>
+                <span class="stat-value">{{ speed }}x</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">狀態</span>
+                <span class="stat-value" :class="{ 'is-live': isPlaying }">
+                  {{ isPlaying ? "播放中" : "停住" }}
+                </span>
+              </div>
+            </div>
+
+            <!-- callback 的實況轉播。onUpdate 一秒六十次，塞進來會洗版，所以不記它 -->
+            <div class="log">
+              <p v-if="!logs.length" class="log-empty">
+                還沒有事件。按下面的按鈕就會有東西跑出來。
+              </p>
+              <p v-for="(item, i) in logs" :key="item.id" class="log-line" :class="{ 'is-newest': i === 0 }">
+                <code>{{ item.name }}</code>
+                <span class="log-note">{{ item.note }}</span>
+              </p>
+            </div>
+          </section>
+        </div>
+
+        <aside class="controls">
+          <div class="ctrl">
+            <span class="ctrl-label">播放控制</span>
+            <div class="btn-list">
+              <button class="btn" @click="doPlay">play</button>
+              <button class="btn" @click="doPause">pause</button>
+              <button class="btn" @click="doReverse">reverse</button>
+              <button class="btn" @click="doRestart">restart</button>
+            </div>
+          </div>
+
+          <div class="ctrl">
+            <span class="ctrl-label">速度倍率 timeScale</span>
+            <input
+              class="slider"
+              type="range"
+              min="0.25"
+              max="3"
+              step="0.05"
+              :value="speed"
+              @input="setSpeed"
+            />
+            <div class="slider-scale">
+              <span>0.25x 慢動作</span>
+              <span>3x 快轉</span>
+            </div>
+          </div>
+
+          <div class="ctrl">
+            <span class="ctrl-label">跳到某一段 seek(label)</span>
+            <div class="btn-list">
+              <button
+                v-for="mark in labels"
+                :key="mark.name"
+                class="btn"
+                @click="jump(mark.name)"
+              >
+                {{ mark.name }}
+              </button>
+            </div>
+          </div>
+
+          <p class="note">
+            四顆播放鈕改的是「有沒有在跑」，速度滑桿改的是「跑多快」，
+            進度條跟跳位鈕改的是「跑到哪」。三件事互不干涉，可以疊著用。
+          </p>
+        </aside>
+      </div>
+
+      <!-- 即時程式碼：上半是這條 timeline 怎麼建的，下半是你剛剛按的那一下 -->
+      <pre class="config">{{ config }}</pre>
+    </div>
+
+    <script src="./main.js"></script>
+  </body>
+</html>

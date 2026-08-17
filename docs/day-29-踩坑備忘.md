@@ -44,3 +44,37 @@
   不想用外掛的話，最低限度是等字型載完再拆：`document.fonts.ready.then(() => { ...拆字... })`。
 - **可延伸的一般觀念**：這個結構跟一般寫法長得不一樣（動畫要塞進 callback），所以新手第一次學拆字時同時看兩種寫法很容易混淆。教學順序上值得拆開。
 - **另外記一筆**：測試時用 `gsap.set(el, { clearProps: "all" })` 會把 SplitText 自己寫在元素上的 inline style（含 `display: inline-block`）一起清掉，字會變成一個一行。這是清屬性清過頭，不是 SplitText 的 bug。
+
+---
+
+## 4. `reverse()` 跑完之後，timeline 並沒有真的「停住」
+
+- **哪天踩到**：Day 11 播放器 demo（`days/day-11-playback-control/main.js`）。
+- **坑是什麼**：demo 有 reverse 鈕和三顆 label 跳位鈕。倒帶回到起點之後按跳位鈕，方塊會先跳到那個 label，然後**自己又往回跑到起點**，像被鬼牽走。
+- **為什麼會發生**：`reverse()` 倒帶到起點時，timeline 的狀態是 `reversed: true` 而且 `paused: false`。它只是「跑到頭了沒事做」，不是「被暫停」。所以 `seek()` 把播放頭搬到中間之後，它發現自己還在倒著播的狀態，就繼續倒回起點。`onComplete` 跑到正向終點也是同樣情況。
+- **怎麼解**：在兩個結束 callback 裡明確 `pause()`，讓狀態誠實：
+
+  ```js
+  const tl = gsap.timeline({
+    onComplete: () => tl.pause(),
+    onReverseComplete: () => tl.pause(),
+  });
+  ```
+
+- **可延伸的一般觀念**：GSAP 裡「動畫沒在動」有好幾種原因（暫停、跑到底、被 kill），它們的內部狀態不一樣。自己用變數記 `isPlaying` 很容易跟 `tl.paused()` 的真實值對不起來，要嘛從 timeline 讀，要嘛像上面這樣主動把狀態收乾淨。
+
+---
+
+## 5. `gsap.updateRoot()` 只在 rAF 完全停掉時才有用
+
+- **哪天記的**：Day 11 驗證 demo 時，接續第 2 條的續集。
+- **坑是什麼**：照第 2 條的做法用 `gsap.updateRoot(時間)` 手動推進動畫，結果畫面出現不可能的狀態：頁面剛載入就跳出 `onReverseComplete`，進度顯示 0。
+- **為什麼會發生**：那個環境的 rAF 不是**完全停止**，只是被嚴重節流（`gsap.ticker.frame` 有在跳，只是很慢）。`updateRoot()` 把 root 時間推到 1.4 秒之後，下一個 rAF tick 又依照真實經過時間把 root 拉回 0.1 秒。時間倒退，於是 timeline 就往回播，觸發了倒帶完成的事件。
+- **怎麼解**：手動推進之前先把 ticker 的 rAF 驅動關掉。
+
+  ```js
+  gsap.ticker.sleep();                              // 先停掉 rAF
+  gsap.updateRoot(gsap.globalTimeline.time() + 2.5); // 再手動推進
+  ```
+
+- **可延伸的一般觀念**：判斷 rAF 有沒有在跑，看 `gsap.ticker.frame` 會不會變，不要只看畫面動不動。節流跟停止是兩回事，第 2 條講的是停止，這條講的是節流，處理方式不同。
