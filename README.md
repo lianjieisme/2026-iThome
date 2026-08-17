@@ -31,7 +31,7 @@
 - **命名**：`day-XX-主題slug`，天數補零（`01` 不是 `1`），排序才不會亂。
 - **每天完全自足**：每個 day 夾自己一份 `style.css`，不共用 `/assets`。任何一天單獨搬走 / 丟 CodePen 都能直接跑。
 - **開新的一天**：複製 `days/_template/` 整夾 → 改名成 `day-XX-主題slug` → 從骨架開始填。
-- **樣式 / 框架**：預設原生 CSS + vanilla JS；版面複雜的天可用 Tailwind CDN，Day 18 用 Vue 示範動畫清理（理由見 [ADR 0001](./docs/adr/0001-per-day-standalone-html-cdn.md)）。
+- **樣式 / 框架**：預設原生 CSS + vanilla JS；版面複雜的天可用 Tailwind CDN，Day 20 用 Vue 示範動畫清理（理由見 [ADR 0001](./docs/adr/0001-per-day-standalone-html-cdn.md)）。
 
 ## Commit 訊息慣例（Conventional Commits）
 
@@ -42,8 +42,8 @@
 | `feat:`     | 新增功能 / 新的一天 demo  | `feat: add Day 2 to/from/set demo`             |
 | `docs:`     | 只改文件 / 文章           | `docs: write Day 1 article`                    |
 | `chore:`    | 設定 / 雜項 / 建置        | `chore: initialize project`                    |
-| `fix:`      | 修 bug                    | `fix: correct ScrollTrigger refresh on Day 12` |
-| `refactor:` | 重構既有 code（功能不變） | `refactor: tidy Day 6 magnetic logic`          |
+| `fix:`      | 修 bug                    | `fix: correct ScrollTrigger refresh on Day 15` |
+| `refactor:` | 重構既有 code（功能不變） | `refactor: tidy Day 8 magnetic logic`          |
 | `style:`    | 只動排版 / 格式           | `style: format Day 3 css`                      |
 
 ## 怎麼跑 demo（本機）
@@ -56,4 +56,4 @@
 `https://你的帳號.github.io/repo名/days/day-01-hello-box/`
 文章裡貼這個連結，讀者點開就看到活的 demo。
 
-> Three.js 那幾天（Day 21-26）用 CDN + `<script type="importmap">` 引入，一樣不需要 build 工具。
+> Three.js 那幾天（Day 22-26）用 CDN + `<script type="importmap">` 引入，一樣不需要 build 工具。
