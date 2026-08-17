@@ -31,7 +31,7 @@
 - **命名**：`day-XX-主題slug`，天數補零（`01` 不是 `1`），排序才不會亂。
 - **每天完全自足**：每個 day 夾自己一份 `style.css`，不共用 `/assets`。任何一天單獨搬走 / 丟 CodePen 都能直接跑。
 - **開新的一天**：複製 `days/_template/` 整夾 → 改名成 `day-XX-主題slug` → 從骨架開始填。
-- **樣式 / 框架**：預設原生 CSS + vanilla JS；版面複雜的天可用 Tailwind CDN，Day 21 用 Vue 示範動畫清理（理由見 [ADR 0001](./docs/adr/0001-per-day-standalone-html-cdn.md)）。
+- **樣式 / 框架**：樣式預設原生 CSS，版面複雜的天可用 Tailwind CDN。**動畫一律 vanilla GSAP，demo 的控制介面（切換鈕、滑桿、即時數值）用 Vue 3 CDN**；Day 21 的 Vue 是主題本身不是工具（理由見 [ADR 0001](./docs/adr/0001-per-day-standalone-html-cdn.md)）。
 
 ## Commit 訊息慣例（Conventional Commits）
 
