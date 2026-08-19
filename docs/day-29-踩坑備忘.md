@@ -78,3 +78,48 @@
   ```
 
 - **可延伸的一般觀念**：判斷 rAF 有沒有在跑，看 `gsap.ticker.frame` 會不會變，不要只看畫面動不動。節流跟停止是兩回事，第 2 條講的是停止，這條講的是節流，處理方式不同。
+
+---
+
+## 6. `kill()` 之後再 `revert()` 就清不掉 inline style 了
+
+- **哪天踩到**：Day 12 四顆球 demo（`days/day-12-killing-tweens/main.js`）的「同時起跑」按鈕。
+- **坑是什麼**：重置時寫 `b.tween?.revert()` 想讓四顆球歸位，結果上一輪被 `kill()` 過的那顆沒有回到原點，下一輪從殘留位置起跑，四顆球的起點就散掉了。
+- **為什麼會發生**：實測確認，`revert()` 只對**還活著**的 tween 有效。
+
+  ```js
+  // A：活著的 tween
+  tw.revert();          // inline style 清乾淨 ✅
+  // B：先 kill 再 revert
+  tw.kill();
+  tw.revert();          // transform 還在，清不掉 ❌
+  ```
+
+  `kill()` 會把 tween 從排程移除並釋放掉，`revert()` 需要的「動畫前的狀態」也跟著沒了。**順序很重要：要還原就直接 `revert()`，不要先 `kill()`。**
+- **怎麼解**：重置時不要依賴 revert，改用 `fromTo()` 明確指定起點：
+
+  ```js
+  gsap.fromTo(el, { x: 0 }, { x: 380, duration: 4 });
+  ```
+
+  `to()` 是從「現在的位置」開始跑，元素上有殘留的 inline style 時起點就不是 0。
+- **可延伸的一般觀念**：只要是「可以重複觸發、每次都要從頭來」的動畫，用 `fromTo()` 比 `to()` 安全。
+
+---
+
+## 7. 被 overwrite 砍掉的 tween，`isActive()` 還是回傳 `true`
+
+- **哪天踩到**：Day 12 overwrite demo，畫面上那個「旋轉：還在轉 / 停了」的狀態晶片說謊。
+- **坑是什麼**：用 `spinTween.isActive()` 判斷旋轉動畫還在不在，但 `overwrite: true` 把它砍掉之後，畫面仍然顯示「還在轉」，實際上 rotation 已經凍住不動。
+- **為什麼會發生**：獨立實驗確認，被 overwrite 砍掉之後 `gsap.getTweensOf(元素)` 已經找不到那條 tween（確實被移除了），但拿舊的 reference 去問 `isActive()` 仍然回傳 `true`。合理的解釋是 `isActive()` 看的是「播放頭在不在自己的時間範圍內、有沒有被暫停」，而不是「我還有沒有掛在排程上」。被拔掉的 tween 自己並不知道。
+- **怎麼解**：不要問那條 tween，要問元素。
+
+  ```js
+  // ❌ 不可靠
+  spinTween.isActive();
+
+  // ✅ 問元素身上現在還掛著哪些活的 tween
+  gsap.getTweensOf(el).some((t) => "rotation" in t.vars);
+  ```
+
+- **可延伸的一般觀念**：手上那個 tween 變數在被砍之後會變成「殭屍 reference」，物件還在、方法都能呼叫、回答卻不可信。要判斷動畫死活，一律從元素這端查。
