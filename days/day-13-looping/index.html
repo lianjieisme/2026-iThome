@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Day 13 — 循環動畫：一輪到底在調什麼</title>
+    <link rel="stylesheet" href="./style.css" />
+    <!-- GSAP + Vue 3 都用 CDN，不需要 build 工具。今天全部用 gsap core。 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/gsap.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  </head>
+  <body>
+    <div id="app" v-cloak>
+      <section class="board">
+        <header class="board-head">
+          <h2 class="board-title">一輪，以及調整一輪的五個開關</h2>
+          <p class="board-sub">
+            下面每一個控制項，都是在調<strong>同一顆球的同一輪</strong>：一輪要播幾次、
+            跑完要不要倒著回來、兩輪之間要不要喘口氣、一輪裡面跑幾段、每一輪要不要都不一樣。
+            先看預設的 <code>repeat: 2</code>，數數看上面的指示燈亮了幾格。
+          </p>
+        </header>
+
+        <!-- 輪數指示燈：這是 repeat 計數坑的視覺證據 -->
+        <div class="iter-row">
+          <span class="iter-label">播放輪數</span>
+          <div class="iter-cells">
+            <span
+              v-for="n in cellCount"
+              :key="n"
+              class="iter-cell"
+              :class="{ 'is-lit': n <= playedRounds }"
+            >
+              {{ n }}
+            </span>
+            <span v-if="config.repeat < 0" class="iter-cell is-endless">∞</span>
+          </div>
+          <span class="iter-count">{{ roundsLabel }}</span>
+        </div>
+
+        <div class="rail is-tall">
+          <!-- 每輪的落點會留一個痕跡。不開 repeatRefresh 時全部疊在同一點 -->
+          <span
+            v-for="(t, i) in trails"
+            :key="i"
+            class="trail"
+            :style="{ transform: 'translate(' + t + 'px, ' + i * -7 + 'px)' }"
+          ></span>
+          <div class="ball is-loop" ref="ballEl"></div>
+        </div>
+
+        <div class="status-row">
+          <span class="chip" :class="running ? 'is-on' : 'is-off'">
+            {{ running ? "跑動中" : "已停下" }}
+          </span>
+          <span class="chip is-neutral">目前 x：{{ ballX }}</span>
+          <span class="chip is-neutral">落點數：{{ trails.length }}</span>
+        </div>
+
+        <!-- 五個控制項 -->
+        <div class="ctrl-grid">
+          <div class="ctrl">
+            <div class="ctrl-head">
+              <code class="ctrl-name">repeat</code>
+              <span class="ctrl-desc">一輪要播幾次</span>
+            </div>
+            <div class="btn-group">
+              <button
+                v-for="r in repeatOptions"
+                :key="r"
+                class="btn is-sm"
+                :class="{ 'is-active': config.repeat === r }"
+                @click="setRepeat(r)"
+              >
+                {{ r === -1 ? "-1（無限）" : r }}
+              </button>
+            </div>
+          </div>
+
+          <div class="ctrl">
+            <div class="ctrl-head">
+              <code class="ctrl-name">yoyo</code>
+              <span class="ctrl-desc">跑完倒著回來</span>
+            </div>
+            <div class="btn-group">
+              <button
+                class="btn is-sm"
+                :class="{ 'is-active': config.yoyo }"
+                @click="toggle('yoyo')"
+              >
+                {{ config.yoyo ? "true" : "false" }}
+              </button>
+            </div>
+          </div>
+
+          <div class="ctrl">
+            <div class="ctrl-head">
+              <code class="ctrl-name">repeatDelay</code>
+              <span class="ctrl-desc">兩輪之間喘口氣</span>
+            </div>
+            <div class="slider-row">
+              <input
+                class="slider"
+                type="range"
+                min="0"
+                max="1"
+                step="0.1"
+                :value="config.repeatDelay"
+                @input="setDelay($event.target.value)"
+              />
+              <code class="slider-value">{{ config.repeatDelay }}s</code>
+            </div>
+          </div>
+
+          <div class="ctrl">
+            <div class="ctrl-head">
+              <code class="ctrl-name">keyframes</code>
+              <span class="ctrl-desc">一輪裡面跑幾段</span>
+            </div>
+            <div class="btn-group">
+              <button
+                class="btn is-sm"
+                :class="{ 'is-active': config.keyframes }"
+                @click="toggle('keyframes')"
+              >
+                {{ config.keyframes ? "多段" : "單段" }}
+              </button>
+            </div>
+          </div>
+
+          <div class="ctrl">
+            <div class="ctrl-head">
+              <code class="ctrl-name">repeatRefresh</code>
+              <span class="ctrl-desc">每輪重抽 random</span>
+            </div>
+            <div class="btn-group">
+              <button
+                class="btn is-sm"
+                :class="{ 'is-active': config.repeatRefresh }"
+                @click="toggle('repeatRefresh')"
+              >
+                {{ config.repeatRefresh ? "true" : "false" }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="board-ctrl">
+          <button class="btn is-fire" @click="rebuild">重新播放 🔁</button>
+        </div>
+
+        <p class="board-note">{{ note }}</p>
+      </section>
+
+      <!-- 即時程式碼：顯示你現在這組設定實際跑的是什麼 -->
+      <pre class="config">{{ codeText }}</pre>
+    </div>
+
+    <script src="./main.js"></script>
+  </body>
+</html>

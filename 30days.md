@@ -34,7 +34,7 @@
 | --- | ----------------------------------- | --------------------------------------------------------------- |
 | 11  | 動畫是一台播放器（操控）            | 心智模型：`gsap.to()` 回傳的東西是可操控的播放器。三組內容：`timeScale`（速度倍率，本身也能被 tween）、`progress()`（getter／setter 兩用，是 Day 15 scrub 的直接前置）、`seek()` + label（按秒數／書籤跳位）；加上四個 callback（`onStart`／`onUpdate`／`onComplete`／`onReverseComplete`）。`play`／`reverse` 因 Day 7 已用過，一句話帶過。`onUpdate` 每幀跑一次的成本，是 Day 22 效能的伏筆 |
 | 12  | 怎麼把動畫停掉（終止）              | 主軸是「單位是誰」：`tween.kill()` 砍那一條、`gsap.killTweensOf(el)` 砍整個元素（會連坐）、`overwrite` 的 `false`／`true`／`"auto"` 三值差異。從 Day 7 真的踩過的連坐坑切入：我只想停 A，為什麼 B 也停了。並用一節對比 `pause` / `kill` / `revert` 三者的差別（值會不會還原），`revert()` 的完整用法留到 Day 21 |
-| 13  | 循環動畫與 GSAP 工具箱              | 比例抓循環 70%、工具箱 30%。循環：`repeat: -1`、`yoyo`、`repeatDelay`、`keyframes`。工具箱只挑會用到的：`clamp`（回頭補 Day 8 用過卻沒解釋的）、`mapRange`、`random`、`toArray`，並特別埋 `wrap`，Day 28 跑馬燈直接回收 |
+| 13  | 循環動畫：一輪              | 原規劃的「循環 70%／工具箱 30%」兩段沒有因果，改收成單一心智模型**一輪**，五個屬性都是在調一輪的某個面向：`repeat`（主打 `repeat: 2` 播三次的計數坑）、`yoyo`、`repeatDelay`、`keyframes`（主打陣列式，百分比式一段對照，屬性陣列式不教）、`repeatRefresh` + `random`（不加就不會重抽，這是後半段存在的理由）。收尾一節淺講 `gsap.utils`：`clamp`（還 Day 8 magnetic 用過沒解釋的債）、`mapRange`、`toArray`、`wrap`（Day 28 跑馬燈回收）。demo 是單舞台加五個開關，用輪數指示燈驗證計數坑。「一輪」這個詞已寫進 `CONTEXT.md` |
 | 14  | ScrollTrigger 基礎                  | `trigger`、`start`、`end`、`toggleActions`。立一個觀念：ScrollTrigger 不是捲動動畫 API，而是把捲動狀態接到動畫生命週期的橋 |
 | 15  | ScrollTrigger 進階：pin + scrub     | 建立「捲動位置 → 動畫進度」的對應                              |
 | 16  | ScrollTrigger 實務：refresh、動態高度與多元素 | refresh 當主角、`batch()` 降為配角。主講什麼情況下版面高度會變、為什麼要 `ScrollTrigger.refresh()`：圖片載入、字型載入、DOM 動態生成、元件 mount、accordion 展開、RWD 換版 |

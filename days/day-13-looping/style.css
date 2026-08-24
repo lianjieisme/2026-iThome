@@ -1,0 +1,342 @@
+/* 簡單 reset（每天自足，直接複製這幾行就好） */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Vue 掛載前先把 #app 藏起來，避免 {{ }} 原始標記閃一下 */
+[v-cloak] {
+  display: none;
+}
+
+#app {
+  width: 100%;
+  max-width: 1120px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 26px;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  padding: 40px 16px;
+  background: #1a1a1a;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Noto Sans TC",
+    sans-serif;
+}
+
+/* ---- 舞台外框 ---- */
+
+.board {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px 26px;
+  border: 1px solid #3f3f46;
+  border-radius: 14px;
+  background: #202024;
+}
+
+.board-head {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.board-title {
+  color: #e5e7eb;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.board-sub {
+  max-width: 800px;
+  color: #9ca3af;
+  font-size: 13px;
+  line-height: 1.9;
+}
+
+.board-sub strong {
+  color: #e5e7eb;
+}
+
+.board-sub code {
+  color: #4ade80;
+  font-size: 12px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+.board-ctrl {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.board-note {
+  padding-top: 14px;
+  color: #9ca3af;
+  font-size: 12px;
+  line-height: 1.9;
+  border-top: 1px solid #3f3f46;
+}
+
+/* ---- 輪數指示燈：repeat 計數坑的證據 ---- */
+
+.iter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.iter-label {
+  color: #71717a;
+  font-size: 12px;
+}
+
+.iter-cells {
+  display: flex;
+  gap: 6px;
+}
+
+.iter-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  color: #52525b;
+  font-size: 12px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  background: #18181b;
+  border: 1px solid #3f3f46;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.iter-cell.is-lit {
+  color: #1a1a1a;
+  background: #4ade80;
+  border-color: #4ade80;
+  font-weight: 600;
+}
+
+.iter-cell.is-endless {
+  color: #fbbf24;
+  border-color: #fbbf24;
+}
+
+.iter-count {
+  color: #9ca3af;
+  font-size: 12px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+/* ---- 跑道 ---- */
+
+.rail {
+  position: relative;
+  width: 100%;
+  padding: 8px 0;
+  border-bottom: 1px dashed #3f3f46;
+}
+
+.rail.is-tall {
+  padding: 46px 0 14px;
+}
+
+.ball {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+}
+
+/* 畫一條線當指針，keyframes 那段會轉，沒指針看不出來 */
+.ball.is-loop {
+  position: relative;
+  background: #4ade80;
+}
+
+.ball.is-loop::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 3px;
+  height: 15px;
+  margin-left: -1.5px;
+  background: #1a1a1a;
+  border-radius: 2px;
+}
+
+/* 每輪落點的痕跡。不開 repeatRefresh 時會全部疊在同一格 */
+.trail {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 44px;
+  height: 44px;
+  border: 1px solid #fbbf24;
+  border-radius: 12px;
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* ---- 狀態晶片 ---- */
+
+.status-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  padding: 5px 12px;
+  font-size: 12px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  border: 1px solid #3f3f46;
+  border-radius: 999px;
+}
+
+.chip.is-on {
+  color: #4ade80;
+  border-color: #4ade80;
+}
+
+.chip.is-off {
+  color: #f472b6;
+  border-color: #f472b6;
+}
+
+.chip.is-neutral {
+  color: #9ca3af;
+}
+
+/* ---- 五個控制項 ---- */
+
+.ctrl-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  padding-top: 4px;
+}
+
+.ctrl {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  background: #18181b;
+  border: 1px solid #3f3f46;
+  border-radius: 10px;
+}
+
+.ctrl-head {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.ctrl-name {
+  color: #4ade80;
+  font-size: 13px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+.ctrl-desc {
+  color: #71717a;
+  font-size: 12px;
+}
+
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.slider {
+  flex: 1;
+  accent-color: #4ade80;
+  cursor: pointer;
+}
+
+.slider-value {
+  min-width: 40px;
+  color: #e5e7eb;
+  font-size: 12px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+/* ---- 按鈕 ---- */
+
+.btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.btn {
+  padding: 7px 16px;
+  font-size: 14px;
+  color: #e5e7eb;
+  background: #2a2a2a;
+  border: 1px solid #3f3f46;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn.is-sm {
+  padding: 5px 12px;
+  font-size: 13px;
+}
+
+.btn:hover {
+  border-color: #4ade80;
+}
+
+.btn.is-active {
+  color: #1a1a1a;
+  background: #4ade80;
+  border-color: #4ade80;
+  font-weight: 600;
+}
+
+.btn.is-fire {
+  color: #1a1a1a;
+  background: #fbbf24;
+  border-color: #fbbf24;
+  font-weight: 600;
+}
+
+.btn.is-fire:hover {
+  border-color: #fff;
+}
+
+/* 即時程式碼區 */
+.config {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 14px 16px;
+  color: #e5e7eb;
+  font-size: 13px;
+  line-height: 1.6;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  background: #111;
+  border: 1px solid #3f3f46;
+  border-radius: 8px;
+  white-space: pre;
+}
