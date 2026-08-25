@@ -123,3 +123,23 @@
   ```
 
 - **可延伸的一般觀念**：手上那個 tween 變數在被砍之後會變成「殭屍 reference」，物件還在、方法都能呼叫、回答卻不可信。要判斷動畫死活，一律從元素這端查。
+
+---
+
+## 8. `tween.kill()` 不會順手收掉掛在它身上的 ScrollTrigger
+
+- **哪天踩到**：Day 14 的 demo，切換 `start` / `end` / `toggleActions` 時要重建動畫。
+- **坑是什麼**：重建流程只寫了 `tw.kill()`，結果每切一次設定就多一組 markers 線，畫面上愈疊愈多條，`ScrollTrigger.getAll().length` 也一路往上加。
+- **為什麼會發生**：`scrollTrigger: {...}` 只是掛在 tween 的 vars 上，實際建立出來的是一個獨立的 ScrollTrigger 實例，有自己的生命週期。砍 tween 只是砍動畫，那個實例還活著、還在監聽捲動。
+- **怎麼解**：兩個都要收，而且先收 ScrollTrigger。
+
+  ```js
+  if (tw) {
+    if (tw.scrollTrigger) tw.scrollTrigger.kill();
+    tw.kill();
+    tw = null;
+  }
+  ```
+
+  要整頁清乾淨的話是 `ScrollTrigger.getAll().forEach((t) => t.kill())`。
+- **可延伸的一般觀念**：接續 Day 12 那條「砍的單位是誰」。ScrollTrigger 是另一個單位，不在 tween 的管轄範圍內。SPA 換頁、Vue 元件 unmount 時特別容易漏掉這個，殘留的 trigger 會對著已經不存在的元素繼續算位置。
