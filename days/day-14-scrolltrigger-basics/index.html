@@ -1,9 +1,25 @@
 <!doctype html>
 <html lang="zh-Hant">
   <head>
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-57MNFJMC");
+    </script>
+    <!-- End Google Tag Manager -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Day 14 — ScrollTrigger 基礎：trigger / start / end / toggleActions</title>
+    <title>
+      Day 14 — ScrollTrigger 基礎：trigger / start / end / toggleActions
+    </title>
     <link rel="stylesheet" href="./style.css" />
     <!-- GSAP + ScrollTrigger + Vue 3 都用 CDN，不需要 build 工具。 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/gsap.min.js"></script>
@@ -11,14 +27,27 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   </head>
   <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-57MNFJMC"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe
+    ></noscript>
+    <!-- End Google Tag Manager (noscript) -->
     <div id="app" v-cloak>
       <!-- 1. 頂部留白：讓讀者一定得捲下來，start 才有意義 -->
       <section class="pad pad-top">
         <h1 class="pad-title">ScrollTrigger 是一座橋</h1>
         <p class="pad-text">
-          它不會幫你做動畫，它只負責決定<strong>什麼時候</strong>叫動畫 play、reverse 或 restart。
-          控制面板可以換 <code>start</code>、<code>end</code> 和 <code>toggleActions</code>，
-          先把 <code>markers</code> 打開，捲下去看那幾條線什麼時候碰在一起。
+          它不會幫你做動畫，它只負責決定<strong>什麼時候</strong>叫動畫
+          play、reverse 或 restart。 控制面板可以換 <code>start</code>、<code
+            >end</code
+          >
+          和 <code>toggleActions</code>， 先把
+          <code>markers</code> 打開，捲下去看那幾條線什麼時候碰在一起。
         </p>
         <p class="pad-hint">↓ 往下捲</p>
       </section>
@@ -32,7 +61,8 @@
       <!-- 3. 底部留白：要夠長，讀者才捲得過頭去觸發 onLeave -->
       <section class="pad pad-bottom">
         <p class="pad-text">
-          再往下捲一點就會越過 <code>end</code>，那一刻 <code>toggleActions</code> 的第二格
+          再往下捲一點就會越過 <code>end</code>，那一刻
+          <code>toggleActions</code> 的第二格
           （onLeave）會被打中。越過之後再往回捲，換第三格（onEnterBack）上場。
         </p>
       </section>
@@ -71,7 +101,9 @@
         <label class="panel-row">
           <span class="panel-label">start</span>
           <select v-model="config.start">
-            <option v-for="v in startOptions" :key="v" :value="v">{{ v }}</option>
+            <option v-for="v in startOptions" :key="v" :value="v">
+              {{ v }}
+            </option>
           </select>
         </label>
 
@@ -85,7 +117,9 @@
         <label class="panel-row">
           <span class="panel-label">toggleActions</span>
           <select v-model="config.toggleActions">
-            <option v-for="v in actionOptions" :key="v" :value="v">{{ v }}</option>
+            <option v-for="v in actionOptions" :key="v" :value="v">
+              {{ v }}
+            </option>
           </select>
         </label>
 
